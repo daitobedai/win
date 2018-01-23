@@ -1,0 +1,44 @@
+mac下安装splash
+先下载docker
+1.Pull the image:
+    $ docker pull scrapinghub/splash
+2.Start the container:
+    $ docker run -p 5023:5023 -p 8050:8050 -p 8051:8051 scrapinghub/splash
+3.Figure out the ip address of the docker-machine:
+    $ docker-machine ip default
+4.访问localhost:8050 或者由第三步获取的ip
+
+
+建表
+CREATE TABLE game_info
+(
+  game_id    CHAR(32)     NOT NULL,
+  home_team  VARCHAR(100) NOT NULL,
+  guest_team VARCHAR(100) NOT NULL,
+  score      VARCHAR(30)  NOT NULL,
+  round      INT          NULL,
+  date       VARCHAR(30)  NULL,
+  time       TIME         NULL,
+  lname      VARCHAR(100) NOT NULL,
+  duration   VARCHAR(40)  NOT NULL,
+  asian_url  VARCHAR(200) NOT NULL,
+  finished   INT          NOT NULL
+)
+  ENGINE = InnoDB
+  CHARSET = utf8;
+
+  CREATE TABLE odds
+(
+  game_id               CHAR(32)       NOT NULL,
+  company_name          VARCHAR(100)   NOT NULL,
+  init_host_odds        DECIMAL(10, 2) NOT NULL,
+  init_handicap         DECIMAL(10, 2) NOT NULL,
+  init_handicap_string  VARCHAR(50)    NULL,
+  init_guest_odds       DECIMAL(10, 2) NULL,
+  whole_host_odds       DECIMAL(10, 2) NULL,
+  whole_handicap        DECIMAL(10, 2) NULL,
+  whole_handicap_string VARCHAR(50)    NULL,
+  whole_guest_odds      DECIMAL(10, 2) NULL
+)
+  ENGINE = InnoDB
+  CHARSET = utf8;
