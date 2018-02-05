@@ -24,10 +24,11 @@ class WinPipeline(object):
     def _conditional_insert(self, tx, item):
         if isinstance(item, GameItem):
             sql = "insert into game_info(game_id,home_team,guest_team,score,round,date,time," \
-                  "lname,duration,asian_url,finished) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,0)"
+                  "lname,duration,asian_url,finished,res) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,0,%s)"
             params = (item["gameId"], item["homeTeam"], item["guestTeam"], item["score"],
-                      item["round"], item["date"], item["time"], item["LName"], item["duration"], item["asianUrl"])
-        else:
+                      item["round"], item["date"], item["time"], item["LName"], item["duration"], item["asianUrl"],
+                      item["res"])
+        elif isinstance(item,AsianOddsItem):
             sql = "insert into odds(game_id,company_name,init_host_odds,init_handicap," \
                   "init_handicap_string,init_guest_odds,whole_host_odds,whole_handicap," \
                   "whole_handicap_string,whole_guest_odds) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);" \
@@ -37,6 +38,13 @@ class WinPipeline(object):
                       item["initHandicap"], item["initHandicapString"], item["initGuestOdds"],
                       item["wholeHostOdds"], item["wholeHandicap"], item["wholeHandicapString"],
                       item["wholeGuestOdds"], item["gameId"])
+        else:
+            sql = "insert into current_odds(round,company_name,init_host_odds,init_handicap," \
+                  "init_guest_odds,whole_host_odds,whole_handicap,whole_guest_odds) values(%s,%s,%s,%s,%s,%s,%s,%s);"
+
+            params = (item["round"], item["companyName"], item["initHostOdds"],
+                      item["initHandicap"], item["initGuestOdds"], item["wholeHostOdds"], item["wholeHandicap"],
+                      item["wholeGuestOdds"])
         tx.execute(sql, params)
 
     @classmethod

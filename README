@@ -22,7 +22,8 @@ CREATE TABLE game_info
   lname      VARCHAR(100) NOT NULL,
   duration   VARCHAR(40)  NOT NULL,
   asian_url  VARCHAR(200) NOT NULL,
-  finished   INT          NOT NULL
+  finished   INT          NOT NULL,
+  res        INT          NULL
 )
   ENGINE = InnoDB
   CHARSET = utf8;

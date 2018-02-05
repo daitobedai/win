@@ -10,6 +10,25 @@ class LeagueItem(Item):
     durations = Field()
 
 
+class CurrentGameItem(Item):
+
+    round = Field()
+    # 博彩公司
+    companyName = Field()
+    # 初始主队赔率
+    initHostOdds = Field()
+    # 初始客队赔率
+    initGuestOdds = Field()
+    # 初始盘口
+    initHandicap = Field()
+    # 终盘主队赔率
+    wholeHostOdds = Field()
+    # 终盘客队赔率
+    wholeGuestOdds = Field()
+    # 终盘盘口
+    wholeHandicap = Field()
+
+
 # 比赛
 class GameItem(Item):
 
@@ -33,6 +52,8 @@ class GameItem(Item):
     duration = Field()
     # 亚赔url
     asianUrl = Field()
+    # 胜负 0:平 1:胜 3:负
+    res = Field()
 
 
 class AsianOddsItem(Item):

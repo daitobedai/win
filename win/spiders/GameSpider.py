@@ -23,7 +23,7 @@ function main(splash, args)
     local buttons = splash:select_all('.lsm2')
 
     local htmls = {}
-
+    [onclick|="clickScoreType(3)"]
     for i, button in ipairs(buttons) do
         button: mouse_click()
         htmls[i] = splash:html()
@@ -44,8 +44,9 @@ end
 
 
 class GameSpider(Spider):
-    allowed_league = {'英超'}
-    allowed_duration = {'2017-2018'}
+    allowed_league = {'英超', '西甲', '德甲', '法甲', '意甲', '葡超', '韩K联', '日职联', '英冠',
+                      '德乙', '法乙', '荷甲', '比甲'}
+    allowed_duration = {'2017-2018', '2016-2017', '2015-2016'}
 
     name = 'GameSpider'
     allowed_domains = ['zq.win007.com', 'vip.win007.com']
@@ -80,7 +81,6 @@ class GameSpider(Spider):
 
         # 关闭数据库连接
         db.close()
-
 
     def parse(self, response):
         country_matches = response.xpath('//div[@class="gameList"]//div[@class="divList"]')
@@ -117,7 +117,14 @@ class GameSpider(Spider):
                 item = GameItem()
 
                 item['score'] = game_infos[3].xpath('.//strong/text()').extract_first()
-                if item['score'] is not None:
+                if item['score'] is not None and item['score'] != '腰斩' and item['score'] != '推迟':
+                    single_scores = item['score'].split('-')
+                    if int(single_scores[0]) == int(single_scores[1]):
+                        item['res'] = 1
+                    elif int(single_scores[0]) > int(single_scores[1]):
+                        item['res'] = 3
+                    else:
+                        item['res'] = 0
                     item['LName'] = duration['LName']
                     item['duration'] = duration['duration']
                     item['round'] = game_infos[0].xpath('./text()').extract_first()

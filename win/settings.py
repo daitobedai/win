@@ -91,7 +91,7 @@ ROBOTSTXT_OBEY = True
 # Scrapy_splash
 
 # COOKIES_ENABLED = False
-# DOWNLOAD_DELAY = 5
+DOWNLOAD_DELAY = 4
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy_splash.SplashCookiesMiddleware': 723,

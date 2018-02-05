@@ -17,7 +17,45 @@ end
 
 class OddsSpider(Spider):
     name = 'OddsSpider'
+    allowed_company = {'ManbetX', 'Crown', 'Bet365', '立博', '韦德', '易胜博', '明陞', '澳门', '10BET', '金宝博', '12bet', '利记', '盈禾',
+                       '18Bet'}
     allowed_domains = ['zq.win007.com', 'vip.win007.com']
+
+    handicap_map = {
+        '受让四球': -4.00,
+        '受让三球半/四球': -3.75,
+        '受让三球半': -3.50,
+        '受让三球/三球半': -3.25,
+        '受让三球': -3.00,
+        '受让两球半/三球': -2.75,
+        '受让两球半': -2.50,
+        '受让两球/两球半': -2.25,
+        '受让两球': -2.00,
+        '受让球半/两球': -1.75,
+        '受让球半': -1.50,
+        '受让一球/球半': -1.25,
+        '受让一球': -1.00,
+        '受让半球/一球': -0.75,
+        '受让半球': -0.50,
+        '受让平手/半球': -0.25,
+        '平手': 0.00,
+        '平手/半球': 0.25,
+        '半球': 0.50,
+        '半球/一球': 0.75,
+        '一球': 1.00,
+        '一球/球半': 1.25,
+        '球半': 1.50,
+        '球半/两球': 1.75,
+        '两球': 2.00,
+        '两球/两球半': 2.25,
+        '两球半': 2.50,
+        '两球半/三球': 2.75,
+        '三球': 3.00,
+        '三球/三球半': 3.25,
+        '三球半': 3.50,
+        '三球半/四球': 3.75,
+        '四球': 4.00,
+    }
 
     game_id_dict = {}
 
@@ -46,7 +84,7 @@ class OddsSpider(Spider):
 
     def parse(self, response):
         items = []
-        odds_matches = response.xpath('//table[@id="odds"]//tr[@bgcolor="#F5F5F5"]')
+        odds_matches = response.xpath('//table[@id="odds"]//tr')
 
         # if not odds_matches:
         #     yield SplashRequest(response.url, callback=self.parse3, endpoint='execute',
@@ -55,18 +93,18 @@ class OddsSpider(Spider):
         for odds_match in odds_matches:
             td_matches = odds_match.xpath('./td')
             company_name = td_matches[0].xpath('./text()').extract_first()
-            if company_name is not None:
+            if company_name is not None and self.allowed_company.issuperset({company_name.strip()}):
                 item = AsianOddsItem()
                 item['gameId'] = self.game_id_dict[response.url]
                 item['companyName'] = company_name.strip()
                 if td_matches[2].xpath('./text()').extract_first() is not None:
                     item['initHostOdds'] = td_matches[2].xpath('./text()').extract_first().strip()
-                    item['initHandicap'] = td_matches[3].xpath('./@goals').extract_first()
                     item['initHandicapString'] = td_matches[3].xpath('./text()').extract_first().strip()
+                    item['initHandicap'] = self.handicap_map[item['initHandicapString']]
                     item['initGuestOdds'] = td_matches[4].xpath('./text()').extract_first().strip()
                     item['wholeHostOdds'] = td_matches[8].xpath('./text()').extract_first().strip()
-                    item['wholeHandicap'] = td_matches[9].xpath('./@goals').extract_first()
                     item['wholeHandicapString'] = td_matches[9].xpath('./text()').extract_first().strip()
+                    item['wholeHandicap'] = self.handicap_map[item['wholeHandicapString']]
                     item['wholeGuestOdds'] = td_matches[10].xpath('./text()').extract_first().strip()
                     items.append(item)
                     yield item
