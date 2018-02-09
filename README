@@ -43,3 +43,21 @@ CREATE TABLE game_info
 )
   ENGINE = InnoDB
   CHARSET = utf8;
+
+CREATE TABLE current_odds
+(
+  round                 VARCHAR(50)     NOT NULL,
+  company_name          VARCHAR(100)   NOT NULL,
+  init_host_odds        DECIMAL(10, 2) NOT NULL,
+  init_handicap         DECIMAL(10, 2) NOT NULL,
+  init_guest_odds       DECIMAL(10, 2) NULL,
+  whole_host_odds       DECIMAL(10, 2) NULL,
+  whole_handicap        DECIMAL(10, 2) NULL,
+  whole_guest_odds      DECIMAL(10, 2) NULL
+
+)
+  ENGINE = InnoDB
+  CHARSET = utf8;
+
+CREATE UNIQUE INDEX indexGameId ON game_info(game_id(32));
+CREATE INDEX indexOddsGameId ON odds(game_id(32));
