@@ -23,7 +23,7 @@ function main(splash, args)
     local buttons = splash:select_all('.lsm2')
 
     local htmls = {}
-    [onclick|="clickScoreType(3)"]
+    
     for i, button in ipairs(buttons) do
         button: mouse_click()
         htmls[i] = splash:html()
